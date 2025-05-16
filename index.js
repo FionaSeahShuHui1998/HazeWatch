@@ -1,59 +1,40 @@
 console.log("Fetching data...");
 
+let readings = [];
+
 // Fetch the data from the API
 fetch("https://api.data.gov.sg/v1/environment/psi")
   .then((response) => response.json())
   .then((data) => {
     console.log("Data fetched successfully.");
-    console.log(data.items[0]);
     // Last Update Date Time
     const getLastUpdateDateTime = data.items[0].update_timestamp;
-    console.log("Upadate Date Time: ", getLastUpdateDateTime);
     const lastUpdateDateTimeElement =
       document.getElementById("lastUpdateDateTime");
     lastUpdateDateTimeElement.textContent =
-      "Last Updated: " + formatDateToCustomString(getLastUpdateDateTime);
-  })
-  .catch((error) => {
-    console.log("Error fetching data:", error);
-  });
+      "Last Updated: " + conversionOfDateString(getLastUpdateDateTime);
+    // Get the readings
+    let rawReadings = data.items[0].readings;
+    const formattedReadings = Object.entries(rawReadings).map(
+      ([metric, regions]) => {
+        const regionValues = Object.values(regions);
+        const national =
+          regionValues.reduce((sum, val) => sum + val, 0) / regionValues.length;
 
-const data = [
-  {
-    metric: "123",
-    national: 55,
-    central: 1,
-    west: 2,
-    north: 3,
-    south: 4,
-    east: 5,
-  },
-  {
-    metric: "abc",
-    national: 55,
-    central: 1,
-    west: 2,
-    north: 3,
-    south: 4,
-    east: 5,
-  },
-  {
-    metric: "def",
-    national: 55,
-    central: 1,
-    west: 2,
-    north: 3,
-    south: 4,
-    east: 5,
-  },
-];
+        return {
+          metric,
+          national,
+          ...regions,
+        };
+      }
+    );
+    // Add readings to the table
+    const tableBody = document.querySelector(".psiTable tbody");
 
-const tableBody = document.querySelector(".psiTable tbody");
+    formattedReadings.forEach((item) => {
+      const row = document.createElement("tr");
 
-data.forEach((item) => {
-  const row = document.createElement("tr");
-
-  row.innerHTML = `
+      row.innerHTML = `
       <td>${item.metric}</td>
       <td>${item.national}</td>
       <td>${item.central}</td>
@@ -63,12 +44,17 @@ data.forEach((item) => {
       <td>${item.south}</td>
     `;
 
-  // Add the row to the table body
-  tableBody.appendChild(row);
-});
+      // Add the row to the table body
+      tableBody.appendChild(row);
+    });
+  })
+
+  .catch((error) => {
+    console.log("Error fetching data:", error);
+  });
 
 // Convert ISO date string to custom format
-function formatDateToCustomString(isoString) {
+function conversionOfDateString(isoString) {
   const date = new Date(isoString);
 
   const day = String(date.getDate()).padStart(2, "0");
