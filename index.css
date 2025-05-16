@@ -5,10 +5,19 @@
 .header {
   text-align: center;
   margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+#lastUpdateDateTime {
+  margin-bottom: 3px;
+  font-size: 14px;
 }
 
 .psiTable {
   width: 100%;
+  margin-left: 10px auto;
+  margin-right: 10px auto;
+  border-collapse: collapse;
 }
 
 .psiTable td {
