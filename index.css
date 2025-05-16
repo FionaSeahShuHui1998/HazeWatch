@@ -10,3 +10,23 @@
 .psiTable {
   width: 100%;
 }
+
+.psiTable td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.psiTable th {
+  background-color: #000000;
+  color: #ffffff;
+  padding: 10px;
+}
+
+.psiTable tr:nth-child(even) {
+  background-color: #b4b4b4;
+}
+
+.psiTable tr:hover {
+  background-color: yellow;
+}
